@@ -1,14 +1,23 @@
+from enum import Enum, auto
 from cambc import Controller, Direction, EntityType, Environment, Position
 import random
 from collections import defaultdict
 
 DIRECTIONS = [d for d in Direction if d != Direction.CENTRE]
 
+class State(Enum):
+    EXPLORING = auto()
+
 class BuilderBot:
     def __init__(self, ct: Controller):
         self.ct = ct
+        self.state = State.EXPLORING
     
     def run(self):
+        if self.state == State.EXPLORING:
+            self.step_exploring()
+
+    def step_exploring(self):
         for d in Direction:
             check_pos = self.ct.get_position().add(d)
             if self.ct.can_build_harvester(check_pos):
@@ -23,7 +32,6 @@ class BuilderBot:
             self.ct.build_road(move_pos)
         if self.ct.can_move(move_dir):
             self.ct.move(move_dir)
-
 
     def get_best_direction(self) -> Direction:
         WALL_WEIGHT = 3
