@@ -1,9 +1,9 @@
 from cambc import Controller, Direction, EntityType, Environment, Position
 
-class Conveyor:
-    def __init__(self, ct: Controller, conveyorType: EntityType):
+class Turret:
+    def __init__(self, ct: Controller, turretType: EntityType):
         self.ct = ct
-        self.conveyorType = conveyorType
-    
+        self.turretType = turretType
+
     def run(self, ctI: Controller):
         pass
