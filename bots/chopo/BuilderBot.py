@@ -13,7 +13,7 @@ class BuilderBot:
             if self.ct.can_build_harvester(check_pos):
                 self.ct.build_harvester(check_pos)
                 break
-        
+        self.lookForOre()
         # move in a random direction
         move_dir = random.choice(DIRECTIONS)
         move_pos = self.ct.get_position().add(move_dir)
@@ -22,3 +22,9 @@ class BuilderBot:
             self.ct.build_road(move_pos)
         if self.ct.can_move(move_dir):
             self.ct.move(move_dir)
+
+    
+    def lookForOre(self):
+        for tile in self.ct.get_nearby_tiles():
+            if self.ct.get_tile_env(tile) in [Environment.ORE_TITANIUM, Environment.ORE_AXIONITE]:
+                print("Found ore at " + str(tile))

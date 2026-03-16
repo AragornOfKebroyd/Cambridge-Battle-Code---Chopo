@@ -6,7 +6,6 @@ from Conveyor import Conveyor
 from Turret import Turret
 from Launcher import Launcher
 from Splitter import Splitter
-from Bridge import Bridge
 from Harvester import Harvester
 from Foundry import Foundry
 from Road import Road
@@ -31,12 +30,10 @@ class Player:
                 self.control = Turret(ct, ct.get_entity_type())
             case EntityType.LAUNCHER:
                 self.control = Launcher(ct)
-            case EntityType.CONVEYOR | EntityType.ARMOURED_CONVEYOR:
+            case EntityType.CONVEYOR | EntityType.ARMOURED_CONVEYOR | EntityType.BRIDGE:
                 self.control = Conveyor(ct, ct.get_entity_type())
             case EntityType.SPLITTER:
                 self.control = Splitter(ct)
-            case EntityType.BRIDGE:
-                self.control = Bridge(ct)
             case EntityType.HARVESTER:
                 self.control = Harvester(ct)
             case EntityType.FOUNDRY:
