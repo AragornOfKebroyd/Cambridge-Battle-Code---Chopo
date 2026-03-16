@@ -16,10 +16,7 @@ class BuilderBot:
                 break
         
         # choose direction based on walls and roads (with a small chance of randomness to avoid loops)
-        if random.random()<0.8:
-            move_dir = self.get_best_direction()
-        else:
-            move_dir = random.choice(DIRECTIONS)
+        move_dir = self.get_best_direction()
         move_pos = self.ct.get_position().add(move_dir)
         # we need to place a conveyor or road to stand on, before we can move onto a tile
         if self.ct.can_build_road(move_pos):
@@ -29,6 +26,9 @@ class BuilderBot:
 
 
     def get_best_direction(self) -> Direction:
+        WALL_WEIGHT = 3
+        ROAD_WEIGHT = 2
+
         visible_tiles = self.ct.get_nearby_tiles()
         visible_entities = self.ct.get_nearby_entities()
         unit_pos = self.ct.get_position()
@@ -45,7 +45,8 @@ class BuilderBot:
             if tile_env == Environment.WALL:
                 position_difference = Position(unit_pos.x-tile_pos.x,unit_pos.y-tile_pos.y)
                 direction = Position(0, 0).direction_to(position_difference)
-                direction_votes[direction] += 2
+                for dir in (direction, direction.rotate_left(), direction.rotate_right()):
+                    direction_votes[dir] += WALL_WEIGHT
 
         for entity_id in visible_entities:
             type = self.ct.get_entity_type(entity_id)
@@ -53,10 +54,16 @@ class BuilderBot:
                 entity_pos = self.ct.get_position(entity_id)
                 position_difference = Position(unit_pos.x-entity_pos.x,unit_pos.y-entity_pos.y)
                 direction = Position(0, 0).direction_to(position_difference)
-                direction_votes[direction] += 3
+                for dir in (direction, direction.rotate_left(), direction.rotate_right()):
+                    direction_votes[dir] += ROAD_WEIGHT
 
         if not direction_votes:
             best_direction = random.choice(DIRECTIONS)
         else:
             best_direction = max(direction_votes.items(), key=lambda item: item[1])[0]
+            # add randomness
+            if random.randint(0, 1):
+                best_direction = best_direction.rotate_left()
+            if random.randint(0, 1):
+                best_direction = best_direction.rotate_right()
         return best_direction
