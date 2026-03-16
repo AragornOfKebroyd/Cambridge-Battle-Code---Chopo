@@ -1,5 +1,8 @@
-from . import Core, Conveyor
+import sys
+sys.path.append("bots/chopo")
 
+from Core import Core
+from Conveyor import Conveyor
 
 from cambc import Controller, Direction, EntityType, Environment, Position
 
