@@ -5,5 +5,5 @@ class Conveyor:
         self.ct = ct
         self.conveyorType = conveyorType
     
-    def run(self, ctI: Controller):
+    def run(self):
         pass

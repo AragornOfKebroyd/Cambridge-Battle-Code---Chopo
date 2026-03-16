@@ -19,7 +19,7 @@ from cambc import Controller, Direction, EntityType, Environment, Position
 DIRECTIONS = [d for d in Direction if d != Direction.CENTRE]
 
 class Player:
-    def __init__(self, *args):
+    def __init__(self):
         self.num_spawned = 0
         self.control = None
     
@@ -53,4 +53,4 @@ class Player:
     def run(self, ct: Controller):
         if self.control is None:
             self.setupControl(ct)
-        self.control.run(ct)
+        self.control.run()

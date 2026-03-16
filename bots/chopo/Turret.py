@@ -5,5 +5,5 @@ class Turret:
         self.ct = ct
         self.turretType = turretType
 
-    def run(self, ctI: Controller):
+    def run(self):
         pass

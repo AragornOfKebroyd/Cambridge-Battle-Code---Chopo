@@ -4,5 +4,5 @@ class Core:
     def __init__(self, ct: Controller):
         self.ct = ct
     
-    def run(self, ctI: Controller):
+    def run(self):
         print("Core running")
