@@ -40,30 +40,20 @@ class BuilderBot:
         visible_tiles = self.ct.get_nearby_tiles()
         visible_entities = self.ct.get_nearby_entities()
         unit_pos = self.ct.get_position()
-        # prefer the direction with the least walls and roads
-        # walls are tiles (need to filter)
-        # roads are entities (need to filter)
-        # per wall, get its normalised vector, and add the opposite direction to a cumulative thing
 
         direction_votes: dict[Direction, int] = defaultdict(int)
-        print(direction_votes)
 
-        for tile_pos in visible_tiles:
-            tile_env = self.ct.get_tile_env(tile_pos)
-            if tile_env == Environment.WALL:
-                position_difference = Position(unit_pos.x-tile_pos.x,unit_pos.y-tile_pos.y)
+        wall_positions = (tile_pos for tile_pos in visible_tiles if self.ct.get_tile_env(tile_pos) == Environment.WALL)
+        road_positions = (self.ct.get_position(entity_id) for entity_id in visible_entities if self.ct.get_entity_type(entity_id) == EntityType.ROAD)
+
+        for positions, weight in [(wall_positions, WALL_WEIGHT), (road_positions, ROAD_WEIGHT)]:
+            for pos in positions:
+                if pos == unit_pos:
+                    continue
+                position_difference = Position(unit_pos.x-pos.x,unit_pos.y-pos.y)
                 direction = Position(0, 0).direction_to(position_difference)
                 for dir in (direction, direction.rotate_left(), direction.rotate_right()):
-                    direction_votes[dir] += WALL_WEIGHT
-
-        for entity_id in visible_entities:
-            type = self.ct.get_entity_type(entity_id)
-            if type == EntityType.ROAD:
-                entity_pos = self.ct.get_position(entity_id)
-                position_difference = Position(unit_pos.x-entity_pos.x,unit_pos.y-entity_pos.y)
-                direction = Position(0, 0).direction_to(position_difference)
-                for dir in (direction, direction.rotate_left(), direction.rotate_right()):
-                    direction_votes[dir] += ROAD_WEIGHT
+                    direction_votes[dir] += weight
 
         if not direction_votes:
             best_direction = random.choice(DIRECTIONS)
